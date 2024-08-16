@@ -26,7 +26,11 @@ class InitialScreen extends StatelessWidget {
                 backgroundColor: AppColors.accentColor,
               ),
               child: const Text('Create Account'),
-            )
+            ),
+            TextButton(
+              onPressed: (){},
+              child: const Text('Login'),
+            ),
           ],
         ),
       ),
