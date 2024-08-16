@@ -9,16 +9,18 @@ class InitialScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'SnapShare',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 25,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Lobster',
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.07,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03,),
             ElevatedButton(
               onPressed: (){},
               style: ElevatedButton.styleFrom(
