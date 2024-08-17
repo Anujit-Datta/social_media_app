@@ -36,7 +36,7 @@ class InitialScreen extends StatelessWidget {
   TextButton loginButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Get.to(() => LoginScreen());
+        Get.to(() => const LoginScreen());
       },
       child: Text(
         'Login',
@@ -50,7 +50,7 @@ class InitialScreen extends StatelessWidget {
   ElevatedButton createAccountButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        Get.to(() => RegistrationScreen());
+        Get.to(() => const RegistrationScreen());
       },
       child: Text(
         'Create Account',
