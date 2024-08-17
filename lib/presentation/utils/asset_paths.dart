@@ -1,3 +1,3 @@
 class AssetPaths{
-  static String basePath = 'assets/';
+  static const String _basePath = 'assets';
 }
