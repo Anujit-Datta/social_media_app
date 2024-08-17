@@ -7,31 +7,39 @@ class InitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'SnapShare',
               style: TextStyle(
-                fontSize: 25,
+                fontSize: 35,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Lobster',
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05,),
             ElevatedButton(
               onPressed: (){},
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: AppColors.accentColor,
+              child: Text(
+                'Create Account',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Colors.white
+                ),
               ),
-              child: const Text('Create Account'),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01,),
             TextButton(
               onPressed: (){},
-              child: const Text('Login'),
+              child: Text(
+                'Login',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: AppColors.accentColor,
+                ),
+              ),
             ),
           ],
         ),
