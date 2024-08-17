@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
+import 'login_screen.dart';
+import 'registration_screen.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
@@ -8,41 +11,65 @@ class InitialScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'SnapShare',
-              style: TextStyle(
-                fontSize: 35,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Lobster',
-              ),
+            appTittle(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.05,),
-            ElevatedButton(
-              onPressed: (){},
-              child: Text(
-                'Create Account',
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: Colors.white
-                ),
-              ),
+            createAccountButton(context),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.01,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-            TextButton(
-              onPressed: (){},
-              child: Text(
-                'Login',
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: AppColors.accentColor,
-                ),
-              ),
+            loginButton(context),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  TextButton loginButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Get.to(() => LoginScreen());
+      },
+      child: Text(
+        'Login',
+        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: AppColors.accentColor,
+            ),
+      ),
+    );
+  }
+
+  ElevatedButton createAccountButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Get.to(() => RegistrationScreen());
+      },
+      child: Text(
+        'Create Account',
+        style: Theme.of(context)
+            .textTheme
+            .labelMedium!
+            .copyWith(color: Colors.white),
+      ),
+    );
+  }
+
+  Text appTittle() {
+    return const Text(
+      'SnapShare',
+      style: TextStyle(
+        fontSize: 40,
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Lobster',
       ),
     );
   }
