@@ -13,16 +13,57 @@ class SnapShare extends StatelessWidget {
       home: const InitialScreen(),
       theme: ThemeData(
         elevatedButtonTheme: buildElevatedButtonThemeData(),
-        textTheme: buildTextTheme()
+        textTheme: buildTextTheme(),
+        inputDecorationTheme: InputDecorationTheme(
+          prefixIconColor: Colors.grey,
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+          ),
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.sizeOf(context).height*0.04,
+            maxHeight: MediaQuery.sizeOf(context).height*0.075,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15,vertical: 0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              width: 1.5,
+              color: Colors.grey,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 1.5
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: AppColors.accentColor,
+              width: 1.5,
+            ),
+          ),
+        )
       ),
     );
   }
 
   TextTheme buildTextTheme() {
-    return const TextTheme(
-      labelMedium: TextStyle(
+    return TextTheme(
+      labelMedium: const TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 15,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textColor,
+      ),
+      titleSmall: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600
       ),
     );
   }
