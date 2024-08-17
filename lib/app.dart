@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:social_media_app/presentation/screens/initial_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
@@ -7,7 +8,7 @@ class SnapShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'SnapShare',
       home: const InitialScreen(),
       theme: ThemeData(
