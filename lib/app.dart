@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social_media_app/presentation/screens/initial_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 class SnapShare extends StatelessWidget {
   const SnapShare({super.key});
