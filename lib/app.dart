@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:social_media_app/presentation/screens/initial_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
+import 'controller_binders.dart';
+
 class SnapShare extends StatelessWidget {
   const SnapShare({super.key});
 
@@ -11,6 +13,7 @@ class SnapShare extends StatelessWidget {
     return GetMaterialApp(
       title: 'SnapShare',
       home: const InitialScreen(),
+      initialBinding: ControllerBinders(),
       theme: ThemeData(
         elevatedButtonTheme: buildElevatedButtonThemeData(),
         textTheme: buildTextTheme(),

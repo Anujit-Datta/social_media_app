@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:social_media_app/presentation/controllers/registration_controller.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
+import 'package:get/get.dart';
+import 'package:social_media_app/presentation/widgets/circular_loader.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -43,16 +46,35 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height * 0.03,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
-                    },
-                    child: Text(
-                      'Register',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
+                  GetBuilder<RegistrationController>(
+                    builder: (controller) {
+                      return ElevatedButton(
+                        onPressed: () async{
+                          if (_formKey.currentState!.validate()) {
+                            await controller.register(
+                              name: _nameTEController.text.trim(),
+                              email: _emailTEController.text.trim(),
+                              password: _passwordTEController.text.trim(),
+                            ).then((status){
+                              if(status){
+                                //Get.offAll(page);
+                              }
+                            });
+
+                          }
+                        },
+                        child: Visibility(
+                          visible: !controller.inProgress,
+                          replacement: const CircularLoader(),
+                          child: Text(
+                            'Register',
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                  color: Colors.white,
+                                ),
                           ),
-                    ),
+                        ),
+                      );
+                    }
                   ),
                   SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
                 ],
