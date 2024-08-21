@@ -18,78 +18,69 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
-  final _fn1 = FocusNode();
-  final _fn2 = FocusNode();
-  final _fn3 = FocusNode();
-  final _fn4 = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.sizeOf(context).height*0.13,),
-              Text(
-                'Enter your email & password to register with us.',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.07,
-              ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    nameField(context),
-                    emailField(context),
-                    passwordField(context),
-                    confirmPasswordField(context),
-                    SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.03,
-                    ),
-                    GetBuilder<RegistrationController>(
-                      builder: (controller) {
-                        return ElevatedButton(
-                          onPressed: () async{
-                            if (_formKey.currentState!.validate()) {
-                              await controller.register(
-                                name: _nameTEController.text.trim(),
-                                email: _emailTEController.text.trim(),
-                                password: _passwordTEController.text.trim(),
-                              ).then((status){
-                                if(status){
-                                  //Get.offAll(page);
-                                }
-                              });
-        
-                            }
-                          },
-                          child: Visibility(
-                            visible: !controller.inProgress,
-                            replacement: const CircularLoader(),
-                            child: Text(
-                              'Register',
-                              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                    color: Colors.white,
-                                  ),
-                            ),
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Enter your email & password to register with us.',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.05,
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  nameField(context),
+                  emailField(context),
+                  passwordField(context),
+                  confirmPasswordField(context),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.03,
+                  ),
+                  GetBuilder<RegistrationController>(
+                    builder: (controller) {
+                      return ElevatedButton(
+                        onPressed: () async{
+                          if (_formKey.currentState!.validate()) {
+                            await controller.register(
+                              name: _nameTEController.text.trim(),
+                              email: _emailTEController.text.trim(),
+                              password: _passwordTEController.text.trim(),
+                            ).then((status){
+                              if(status){
+                                //Get.offAll(page);
+                              }
+                            });
+
+                          }
+                        },
+                        child: Visibility(
+                          visible: !controller.inProgress,
+                          replacement: const CircularLoader(),
+                          child: Text(
+                            'Register',
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                  color: Colors.white,
+                                ),
                           ),
-                        );
-                      }
-                    ),
-                    SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
-                  ],
-                ),
-              )
-            ],
-          ),
+                        ),
+                      );
+                    }
+                  ),
+                  SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -108,7 +99,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _confirmPasswordTEController,
-          focusNode: _fn4,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Retype Password',
@@ -147,15 +137,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _passwordTEController,
-          focusNode: _fn3,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Password',
             prefixIcon: Icon(Icons.lock_outline),
           ),
-          onFieldSubmitted: (_){
-            _fn4.requestFocus();
-          },
           validator: (input) {
             if (input == null || input == '') {
               return 'Empty Password';
@@ -189,15 +175,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _emailTEController,
-          focusNode: _fn2,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Email',
             prefixIcon: Icon(Icons.mail_outline),
           ),
-          onFieldSubmitted: (_){
-            _fn3.requestFocus();
-          },
           validator: (input) {
             if (input == null || input == '') {
               return 'Empty Email';
@@ -228,15 +210,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _nameTEController,
-          focusNode: _fn1,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Name',
             prefixIcon: Icon(Icons.person_2_outlined),
           ),
-          onFieldSubmitted: (_){
-            _fn2.requestFocus();
-          },
           validator: (input) {
             if (input == null || input == '') {
               return 'Empty Name';
