@@ -11,10 +11,15 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameTEController = TextEditingController();
+  final _nameFocusNode= FocusNode();
   final TextEditingController _emailTEController = TextEditingController();
+  final _emailFocusNode= FocusNode();
   final TextEditingController _passwordTEController = TextEditingController();
+  final _passwordFocusNode= FocusNode();
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
+  final _confirmPasswordFocusNode= FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,13 +32,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: MediaQuery.sizeOf(context).height*0.1,),
+              SizedBox(height: MediaQuery.sizeOf(context).height*0.13,),
               Text(
                 'Enter your email & password to register with us.',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.05,
+                height: MediaQuery.sizeOf(context).height * 0.07,
               ),
               Form(
                 key: _formKey,
@@ -48,17 +53,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     SizedBox(
                       height: MediaQuery.sizeOf(context).height * 0.03,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
-                      },
-                      child: Text(
-                        'Register',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                    ),
+                    registerButton(context),
                     SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
                   ],
                 ),
@@ -68,6 +63,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  ElevatedButton registerButton(BuildContext context) {
+    return ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {}
+                    },
+                    child: Text(
+                      'Register',
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  );
   }
 
   Column confirmPasswordField(BuildContext context) {
@@ -83,6 +92,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _confirmPasswordTEController,
+          focusNode: _confirmPasswordFocusNode,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Retype Password',
@@ -99,6 +109,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             } else {
               return null;
             }
+          },
+          onFieldSubmitted: (text){
+            _confirmPasswordFocusNode.unfocus();
           },
         ),
         SizedBox(
@@ -121,6 +134,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _passwordTEController,
+          focusNode: _passwordFocusNode,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Password',
@@ -137,6 +151,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             } else {
               return null;
             }
+          },
+          onFieldSubmitted: (text){
+            _confirmPasswordFocusNode.requestFocus();
           },
         ),
         SizedBox(
@@ -159,6 +176,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _emailTEController,
+          focusNode: _emailFocusNode,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Email',
@@ -172,6 +190,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             } else {
               return null;
             }
+          },
+          onFieldSubmitted: (text){
+            _passwordFocusNode.requestFocus();
           },
         ),
         SizedBox(
@@ -194,6 +215,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         TextFormField(
           controller: _nameTEController,
+          focusNode: _nameFocusNode,
           cursorColor: AppColors.accentColor,
           decoration: const InputDecoration(
             hintText: 'Enter Name',
@@ -205,6 +227,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             }else {
               return null;
             }
+          },
+          onFieldSubmitted: (text){
+            _emailFocusNode.requestFocus();
           },
         ),
         SizedBox(
