@@ -237,5 +237,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _passwordTEController.dispose();
     _confirmPasswordTEController.dispose();
     super.dispose();
+
   }
 }
