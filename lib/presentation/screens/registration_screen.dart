@@ -18,47 +18,53 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Enter your email & password to register with us.',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.05,
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  nameField(context),
-                  emailField(context),
-                  passwordField(context),
-                  confirmPasswordField(context),
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.03,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
-                    },
-                    child: Text(
-                      'Register',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
-                ],
+      resizeToAvoidBottomInset: true,
+
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.sizeOf(context).height*0.1,),
+              Text(
+                'Enter your email & password to register with us.',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            )
-          ],
+              SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.05,
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    nameField(context),
+                    emailField(context),
+                    passwordField(context),
+                    confirmPasswordField(context),
+                    SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.03,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {}
+                      },
+                      child: Text(
+                        'Register',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
