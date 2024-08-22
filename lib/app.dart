@@ -68,9 +68,18 @@ class SnapShare extends StatelessWidget {
         fontWeight: FontWeight.w700,
         color: AppColors.textColor,
       ),
+      titleMedium: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textColor,
+      ),
       titleSmall: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w600
+      ),
+      bodySmall: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400
       ),
     );
   }
