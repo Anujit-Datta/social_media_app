@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: MediaQuery.sizeOf(context).height*0.1,),
               Text(
                 'Enter your email & password to register with us.',
                 style: Theme.of(context).textTheme.titleLarge,
@@ -50,7 +53,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        Get.to(() => const ProfileScreen());
+                        //if (_formKey.currentState!.validate()) {}
                       },
                       child: Text(
                         'Register',
