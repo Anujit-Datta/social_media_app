@@ -33,7 +33,7 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Profile',
+          true?'Profile':'name',
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
@@ -42,10 +42,17 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(
             height: sizes.height * 0.17,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: EdgeInsets.symmetric(vertical: sizes.height * 0.02),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [profilePicture(sizes), profileInfo(context, sizes)],
+                children: [
+                  profilePicture(sizes),
+                  Visibility(
+                    visible: true,
+                    replacement: otherProfileSection(context, sizes),
+                    child: selfProfileInfo(context, sizes),
+                  ),
+                ],
               ),
             ),
           ),
@@ -56,47 +63,51 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(
             height: sizes.height * 0.698,
             width: sizes.width,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  SizedBox(height: sizes.height*0.01,),
-                  Text(
-                    'Uploads',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Divider(),
-                  Expanded(
-                    child: StaggeredGridView.countBuilder(
-                      staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      itemCount: images.length,
-                      itemBuilder: (context,index) => ClipRRect(
-                        borderRadius: BorderRadius.circular(15), // Set your desired corner radius
-                        child: Image.network(
-                          images[index],
-                          fit: BoxFit.cover, // Adjust as needed (cover, contain, etc.)
-                        ),
-                      ),
-                    
-                    ),
-                  )
-                ],
-              ),
-            ),
+            child: uploadsSection(sizes, context, images),
           ),
         ],
       ),
     );
   }
 
+  Padding uploadsSection(Size sizes, BuildContext context, List<dynamic> images) {
+    return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                SizedBox(height: sizes.height*0.01,),
+                Text(
+                  'Uploads',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const Divider(),
+                Expanded(
+                  child: StaggeredGridView.countBuilder(
+                    staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    itemCount: images.length,
+                    itemBuilder: (context,index) => ClipRRect(
+                      borderRadius: BorderRadius.circular(15), // Set your desired corner radius
+                      child: Image.network(
+                        images[index],
+                        fit: BoxFit.cover, // Adjust as needed (cover, contain, etc.)
+                      ),
+                    ),
+
+                  ),
+                )
+              ],
+            ),
+          );
+  }
 
 
 
 
-  Widget profileInfo(BuildContext context, Size sizes) {
+
+  Widget selfProfileInfo(BuildContext context, Size sizes) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
@@ -114,54 +125,106 @@ class ProfileScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const Spacer(),
-          Row(
-            children: [
-              Text(
-                '0 ',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Text(
-                'Post',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(
-                  Icons.circle,
-                  color: Colors.grey,
-                  size: sizes.width * 0.015,
-                ),
-              ),
-              Text(
-                '0 ',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Text(
-                'Follower',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(
-                  Icons.circle,
-                  color: Colors.grey,
-                  size: sizes.width * 0.015,
-                ),
-              ),
-              Text(
-                '0 ',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Text(
-                'Following',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          )
+          postAndFollowCount(context: context,sizes: sizes,postCount: 0,followerCount: 0,followingCount: 0,),
         ],
       ),
     );
   }
+
+  Widget otherProfileSection(BuildContext context, Size sizes) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        postAndFollowCount(context: context,sizes: sizes,postCount: 0,followerCount: 0,followingCount: 0,),
+        Text(
+          '@username',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: SizedBox(
+            height: sizes.height*0.035,
+            child: Row(
+              children: [
+                MaterialButton(
+                  onPressed: (){},
+                  color: Colors.grey.shade400,
+                  child: Text(
+                    'Follow',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                SizedBox(width: sizes.width*0.03,),
+                MaterialButton(
+                  onPressed: (){},
+                  color: Colors.grey.shade400,
+                  child: Text(
+                    'Message',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  Row postAndFollowCount(
+      {required BuildContext context,
+      required Size sizes,
+      required int postCount,
+      required int followerCount,
+      required int followingCount}) {
+    return Row(
+        children: [
+          Text(
+            postCount.toString(),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Text(
+            ' Post',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.circle,
+              color: Colors.grey,
+              size: sizes.width * 0.015,
+            ),
+          ),
+          Text(
+            followerCount.toString(),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Text(
+            ' Follower',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.circle,
+              color: Colors.grey,
+              size: sizes.width * 0.015,
+            ),
+          ),
+          Text(
+            followingCount.toString(),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Text(
+            ' Following',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      );
+  }
+
 
   Widget profilePicture(Size sizes) {
     return CircleAvatar(
