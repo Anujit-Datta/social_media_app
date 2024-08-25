@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
+import 'live_home_screen.dart';
+
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -24,6 +26,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30),
@@ -53,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(() => const ProfileScreen());
+                        Get.to(() => const LiveHomeScreen());
                         //if (_formKey.currentState!.validate()) {}
                       },
                       child: Text(
