@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
-import 'login_screen.dart';
+import 'log_in_screen.dart';
 import 'registration_screen.dart';
 
 class InitialScreen extends StatelessWidget {
@@ -36,7 +36,7 @@ class InitialScreen extends StatelessWidget {
   TextButton loginButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Get.to(() => const LoginScreen());
+        Get.to(() => const LogInScreen());
       },
       child: Text(
         'Login',
