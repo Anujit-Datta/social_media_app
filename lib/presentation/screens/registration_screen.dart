@@ -36,7 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: MediaQuery.sizeOf(context).height*0.1,),
+              SizedBox(height: MediaQuery.sizeOf(context).height*0.01,),
               Text(
                 'Enter your email & password to register with us.',
                 style: Theme.of(context).textTheme.titleLarge,
