@@ -9,7 +9,7 @@ class ProfileController extends GetxController{
   final _data =FirebaseFirestore.instance;
   bool _inProgress=false;
   bool _isSelfProfile=true;
-  late UserModel user;
+  UserModel user=UserModel(uid: '', name: 'name', username: 'username', email: 'email');
 
   get inProgress => _inProgress;
   get isSelfProfile => _isSelfProfile;
