@@ -6,7 +6,6 @@ import '../utils/assets_colors_path.dart';
 import '../utils/regexp_email_verification.dart';
 import '../widgets/customise_button.dart';
 
-
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
@@ -52,7 +51,6 @@ class _LogInScreenState extends State<LogInScreen> {
         setState(() {
           dataLogIn();
         });
-
       }
     }
   }
