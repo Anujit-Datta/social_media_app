@@ -20,4 +20,32 @@ class UserModel{
     this.followingCount=0,
     this.posts=const[],
   });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      uid: json['uid'],
+      name: json['name'],
+      username: json['username'],
+      email: json['email'],
+      profilePicture: json['profilePicture'] ?? '',
+      postCount: json['postCount'] ?? 0,
+      followerCount: json['followerCount'] ?? 0,
+      followingCount: json['followingCount'] ?? 0,
+      posts: List<String>.from(json['posts'] ?? []),
+    );
+  }
+
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'uid': uid,
+  //     'name': name,
+  //     'username': username,
+  //     'email': email,
+  //     'profilePicture': profilePicture,
+  //     'postCount': postCount,
+  //     'followerCount': followerCount,
+  //     'followingCount': followingCount,
+  //     'posts': posts,
+  //   };
+  // }
 }
