@@ -1,40 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_staggered_grid_view/flutter_dynamic_staggered_grid_view.dart';
+import 'package:get/get.dart';
+import 'package:social_media_app/presentation/controllers/profile_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key,required this.uid});
+
+  final String uid;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Get.find<ProfileController>().fetchProfileInfo(uid: widget.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
     Size sizes = MediaQuery.sizeOf(context);
-    List images=[
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F10.jpeg?alt=media&token=92ab69b5-8f7c-456f-a3bf-379da56d6273',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F11.jpeg?alt=media&token=f991f7cf-dcca-4ba4-b48e-394e1dde4cd8',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F6.jpeg?alt=media&token=8f8d9355-dbc6-4790-bd5c-86f1cfe8697a',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F8.jpeg?alt=media&token=e9cb3fcf-b0bd-4581-abb5-9f795f2f30d8',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjmA6IFd3Ps4DYnSNRHo8hLNm1wIPBqWV2-Q&s',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F10.jpeg?alt=media&token=92ab69b5-8f7c-456f-a3bf-379da56d6273',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F11.jpeg?alt=media&token=f991f7cf-dcca-4ba4-b48e-394e1dde4cd8',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F6.jpeg?alt=media&token=8f8d9355-dbc6-4790-bd5c-86f1cfe8697a',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F8.jpeg?alt=media&token=e9cb3fcf-b0bd-4581-abb5-9f795f2f30d8',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjmA6IFd3Ps4DYnSNRHo8hLNm1wIPBqWV2-Q&s',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F10.jpeg?alt=media&token=92ab69b5-8f7c-456f-a3bf-379da56d6273',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F11.jpeg?alt=media&token=f991f7cf-dcca-4ba4-b48e-394e1dde4cd8',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F6.jpeg?alt=media&token=8f8d9355-dbc6-4790-bd5c-86f1cfe8697a',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F8.jpeg?alt=media&token=e9cb3fcf-b0bd-4581-abb5-9f795f2f30d8',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjmA6IFd3Ps4DYnSNRHo8hLNm1wIPBqWV2-Q&s',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F10.jpeg?alt=media&token=92ab69b5-8f7c-456f-a3bf-379da56d6273',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F11.jpeg?alt=media&token=f991f7cf-dcca-4ba4-b48e-394e1dde4cd8',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F6.jpeg?alt=media&token=8f8d9355-dbc6-4790-bd5c-86f1cfe8697a',
-      'https://firebasestorage.googleapis.com/v0/b/ostad-works.appspot.com/o/photogrid%2F8.jpeg?alt=media&token=e9cb3fcf-b0bd-4581-abb5-9f795f2f30d8',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjmA6IFd3Ps4DYnSNRHo8hLNm1wIPBqWV2-Q&s',
-    ];
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          true?'Profile':'name',
-          style: Theme.of(context).textTheme.titleLarge,
+        centerTitle: Get.find<ProfileController>().isSelfProfile,
+        title: GetBuilder<ProfileController>(
+          builder: (ctrl) {
+            return Text(
+              ctrl.isSelfProfile?'Profile':ctrl.user.name,
+              style: Theme.of(context).textTheme.titleLarge,
+            );
+          }
         ),
       ),
       body: Column(
@@ -49,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
                   profilePicture(sizes),
                   Visibility(
                     visible: true,
-                    replacement: otherProfileSection(context, sizes),
+                    replacement: otherProfileSection(context, sizes,),
                     child: selfProfileInfo(context, sizes),
                   ),
                 ],
@@ -63,14 +61,14 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(
             height: sizes.height * 0.698,
             width: sizes.width,
-            child: uploadsSection(sizes, context, images),
+            child: uploadsSection(sizes, context),
           ),
         ],
       ),
     );
   }
 
-  Padding uploadsSection(Size sizes, BuildContext context, List<dynamic> images) {
+  Padding uploadsSection(Size sizes, BuildContext context) {
     return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -82,20 +80,24 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Divider(),
                 Expanded(
-                  child: StaggeredGridView.countBuilder(
-                    staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    itemCount: images.length,
-                    itemBuilder: (context,index) => ClipRRect(
-                      borderRadius: BorderRadius.circular(15), // Set your desired corner radius
-                      child: Image.network(
-                        images[index],
-                        fit: BoxFit.cover, // Adjust as needed (cover, contain, etc.)
-                      ),
-                    ),
+                  child: GetBuilder<ProfileController>(
+                    builder: (controller) {
+                      return StaggeredGridView.countBuilder(
+                        staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: controller.user.posts.length,
+                        itemBuilder: (context,index) => ClipRRect(
+                          borderRadius: BorderRadius.circular(15), // Set your desired corner radius
+                          child: Image.network(
+                            controller.user.posts[index],
+                            fit: BoxFit.cover, // Adjust as needed (cover, contain, etc.)
+                          ),
+                        ),
 
+                      );
+                    }
                   ),
                 )
               ],
@@ -103,43 +105,47 @@ class ProfileScreen extends StatelessWidget {
           );
   }
 
-
-
-
-
   Widget selfProfileInfo(BuildContext context, Size sizes) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Name',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(
-            height: sizes.height * 0.002,
-          ),
-          Text(
-            '@username',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          const Spacer(),
-          postAndFollowCount(context: context,sizes: sizes,postCount: 0,followerCount: 0,followingCount: 0,),
-        ],
+      child: GetBuilder<ProfileController>(
+        builder: (ctrl) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                ctrl.user.name,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(
+                height: sizes.height * 0.002,
+              ),
+              Text(
+                '@${ctrl.user.username}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const Spacer(),
+              postAndFollowCount(context,sizes),
+            ],
+          );
+        }
       ),
     );
   }
 
-  Widget otherProfileSection(BuildContext context, Size sizes) {
+  Widget otherProfileSection(BuildContext context, Size sizes,) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        postAndFollowCount(context: context,sizes: sizes,postCount: 0,followerCount: 0,followingCount: 0,),
-        Text(
-          '@username',
-          style: Theme.of(context).textTheme.bodySmall,
+        postAndFollowCount(context,sizes),
+        GetBuilder<ProfileController>(
+          builder: (ctrl) {
+            return Text(
+              '@${ctrl.user.username}',
+              style: Theme.of(context).textTheme.bodySmall,
+            );
+          }
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
@@ -173,67 +179,69 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Row postAndFollowCount(
-      {required BuildContext context,
-      required Size sizes,
-      required int postCount,
-      required int followerCount,
-      required int followingCount}) {
-    return Row(
-        children: [
-          Text(
-            postCount.toString(),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          Text(
-            ' Post',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Icon(
-              Icons.circle,
-              color: Colors.grey,
-              size: sizes.width * 0.015,
-            ),
-          ),
-          Text(
-            followerCount.toString(),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          Text(
-            ' Follower',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Icon(
-              Icons.circle,
-              color: Colors.grey,
-              size: sizes.width * 0.015,
-            ),
-          ),
-          Text(
-            followingCount.toString(),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          Text(
-            ' Following',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
-      );
+  Widget postAndFollowCount(BuildContext context, Size sizes,) {
+    return GetBuilder<ProfileController>(
+      builder: (ctrl) {
+        return Row(
+            children: [
+              Text(
+                ctrl.user.postCount.toString(),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                ' Post',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(
+                  Icons.circle,
+                  color: Colors.grey,
+                  size: sizes.width * 0.015,
+                ),
+              ),
+              Text(
+                ctrl.user.followerCount.toString(),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                ' Follower',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(
+                  Icons.circle,
+                  color: Colors.grey,
+                  size: sizes.width * 0.015,
+                ),
+              ),
+              Text(
+                ctrl.user.followingCount.toString(),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                ' Following',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          );
+      }
+    );
   }
 
-
   Widget profilePicture(Size sizes) {
-    return CircleAvatar(
-      radius: sizes.height * 0.085,
-      backgroundImage: const AssetImage(
-        'assets/profile_avater.jpg',
-      ),
-      backgroundColor: Colors.grey.shade400,
-      foregroundColor: Colors.transparent,
+    return GetBuilder<ProfileController>(
+      builder: (ctrl) {
+        return CircleAvatar(
+          radius: sizes.height * 0.085,
+          backgroundImage: NetworkImage(
+            ctrl.user.profilePicture,
+          ),
+          backgroundColor: Colors.grey.shade400,
+          foregroundColor: Colors.transparent,
+        );
+      }
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
 import 'package:social_media_app/presentation/screens/profile_screen.dart';
 
 import '../utils/assets_colors_path.dart';
@@ -55,8 +56,10 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
       leading: Padding(
         padding: const EdgeInsets.all(5.0),
         child: ButtonAvatar(
-          onTap: () {
-            Get.to(() => const ProfileScreen());
+          onTap: () async{
+            await AuthController.getToken().then((uid){
+              Get.to(() => ProfileScreen(uid: uid,));
+            });
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
