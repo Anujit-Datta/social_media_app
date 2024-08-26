@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.black12,
           ),
           SizedBox(
-            height: sizes.height * 0.698,
+            height: sizes.height * 0.6,
             width: sizes.width,
             child: uploadsSection(sizes, context),
           ),

@@ -21,6 +21,7 @@ class LiveHomeScreen extends StatefulWidget {
 class _LiveHomeScreenState extends State<LiveHomeScreen> {
   bool _isIconChecked = false;
   bool _isFavoriteIconChecked = false;
+  ScrollController sharedScrollController = ScrollController();
 
   void notificationsUpdate() {
     setState(() {
@@ -40,6 +41,7 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
     return Scaffold(
       appBar: buildAppBar(),
       body: SingleChildScrollView(
+        controller: sharedScrollController,
         child: Column(
           children: [
             buildStoryList(),
@@ -107,9 +109,8 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
   Widget buildStoryList() {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Container(
-        color: Colors.white,
-        height: 180,
+      child: SizedBox(
+        height: MediaQuery.sizeOf(context).height*0.19,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: 10,
@@ -122,8 +123,6 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
                 bottom: 0,
               ),
               child: Container(
-                height: 100,
-                width: 120,
                 decoration: BoxDecoration(
                   color: Colors.white38,
                   borderRadius: BorderRadius.circular(10),
@@ -137,7 +136,7 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
                           child: Image.network(
                             'https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1724228536~exp=1724229136~hmac=32879a49496018577775f1cb5c73589142ecb98ac26348d0ac4fcb8010778d9e',
                             fit: BoxFit.cover,
-                            height: 140,
+                            height: MediaQuery.sizeOf(context).height*0.16,
                             width: 120,
                           ),
                         ),
@@ -190,8 +189,10 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
 
   Widget buildUserDetails(TextTheme textTheme) {
     return SizedBox(
-      height: 450,
+      height: MediaQuery.sizeOf(context).height*0.6,
       child: ListView.builder(
+        //physics: NeverScrollableScrollPhysics(),
+        controller: sharedScrollController,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.only(
@@ -200,8 +201,7 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
               top: 10,
             ),
             child: CustomizeBox(
-              height: 410,
-              width: 250,
+              height: MediaQuery.sizeOf(context).height*0.46,
               color: Colors.white70,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,8 +222,8 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
                           title: 'Name\n',
                           subTitle: '@UserName',
                         ),
-                        const Spacer(),
-                        buildIMenuBar(context, textTheme),
+                        //const Spacer(),
+                        //buildIMenuBar(context, textTheme),
                       ],
                     ),
                   ),
