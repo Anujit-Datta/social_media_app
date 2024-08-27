@@ -21,19 +21,19 @@ class TextRich extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: title,
-        style: textTheme.labelLarge,
+        style: textTheme.titleMedium,
         children: [
           TextSpan(
             text: subTitle,
-            style: textTheme.titleMedium,
+            style: textTheme.bodySmall,
           ),
           TextSpan(
             text: commentText,
-            style: textTheme.titleMedium,
+            style: textTheme.bodySmall,
           ),
           TextSpan(
             text: replayText,
-            style: textTheme.titleMedium,
+            style: textTheme.labelMedium,
           ),
         ],
       ),
