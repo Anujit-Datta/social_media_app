@@ -16,7 +16,7 @@ class SnapShare extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'SnapShare',
-      home: const BottomNavBar(),
+      home: const InitialScreen(),
       initialBinding: ControllerBinders(),
       theme: ThemeData(
         elevatedButtonTheme: buildElevatedButtonThemeData(),

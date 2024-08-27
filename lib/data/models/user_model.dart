@@ -35,17 +35,18 @@ class UserModel{
     );
   }
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'uid': uid,
-  //     'name': name,
-  //     'username': username,
-  //     'email': email,
-  //     'profilePicture': profilePicture,
-  //     'postCount': postCount,
-  //     'followerCount': followerCount,
-  //     'followingCount': followingCount,
-  //     'posts': posts,
-  //   };
-  // }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'name': name,
+      'username': username,
+      'email': email,
+      'profilePicture': profilePicture,
+      'postCount': postCount,
+      'followerCount': followerCount,
+      'followingCount': followingCount,
+      'posts': posts,
+    };
+  }
 }

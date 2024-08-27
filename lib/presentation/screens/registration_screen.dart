@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social_media_app/presentation/controllers/registration_controller.dart';
+import 'package:social_media_app/presentation/screens/bottom_nav_bar.dart';
 import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
@@ -57,9 +59,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       height: MediaQuery.sizeOf(context).height * 0.03,
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => const LiveHomeScreen());
-                        //if (_formKey.currentState!.validate()) {}
+                      onPressed: () async{
+                        if (_formKey.currentState!.validate()) {
+                          bool isSuccess=await Get.find<RegistrationController>().register(
+                            name: _nameTEController.text.trim(),
+                            email: _emailTEController.text.trim(),
+                            password: _passwordTEController.text.trim(),
+                          );
+                          if(isSuccess){
+                            Get.to(()=>const BottomNavBar());
+                          }
+                        }
                       },
                       child: Text(
                         'Register',
