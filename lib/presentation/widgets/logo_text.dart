@@ -8,11 +8,11 @@ class LogoText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Text(
-      'SociaLive',
+      'SnapShare',
       style: TextStyle(
         fontSize: 25,
-        fontFamily: 'Lobster_Two',
-        fontWeight: FontWeight.bold,
+        fontFamily: 'Lobster',
+        fontWeight: FontWeight.w500,
         fontStyle: FontStyle.italic,
       ),
     );
