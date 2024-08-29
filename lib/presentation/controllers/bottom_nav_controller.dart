@@ -1,20 +1,25 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:social_media_app/presentation/screens/live_add_screen.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:social_media_app/presentation/controllers/posts_controller.dart';
+import 'package:social_media_app/presentation/screens/add_post_screen.dart';
 import 'package:social_media_app/presentation/screens/live_home_screen.dart';
 import 'package:social_media_app/presentation/screens/profile_screen.dart';
+import 'package:social_media_app/presentation/utils/app_colors.dart';
 
 class BottomNavController extends GetxController{
   int _selectedIndex=0;
   List screens=[
     const LiveHomeScreen(),
     const LiveHomeScreen(),
-    const LiveAddScreen(),
-    const ProfileScreen(uid: "Ggv6C6rP28dDagGyeRwiX5L2K2F2"),
+    const AddPostScreen(),
+    ProfileScreen(),
   ];
 
   get selectedIndex => _selectedIndex;
 
-  void setSelectedIndex(int index){
+  setSelectedIndex(int index)async{
+
     _selectedIndex=index;
     update();
   }

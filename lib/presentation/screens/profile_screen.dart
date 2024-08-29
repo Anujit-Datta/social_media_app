@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_staggered_grid_view/flutter_dynamic_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
 import 'package:social_media_app/presentation/controllers/profile_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key,required this.uid});
+  const ProfileScreen({super.key,this.uid});
 
-  final String uid;
+  final String? uid;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -17,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Get.find<ProfileController>().fetchProfileInfo(uid: widget.uid);
+    Get.find<ProfileController>().fetchProfileInfo(uid: widget.uid ?? AuthController.accessToken);
   }
 
   @override
@@ -35,35 +36,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: sizes.height * 0.17,
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: sizes.height * 0.02),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  profilePicture(sizes),
-                  Visibility(
-                    visible: true,
-                    replacement: otherProfileSection(context, sizes,),
-                    child: selfProfileInfo(context, sizes),
-                  ),
-                ],
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          Get.find<ProfileController>().fetchProfileInfo(uid: widget.uid ?? AuthController.accessToken);
+        },
+        child: Column(
+          children: [
+            SizedBox(
+              height: sizes.height * 0.17,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: sizes.height * 0.02),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    profilePicture(sizes),
+                    Visibility(
+                      visible: true,
+                      replacement: otherProfileSection(context, sizes,),
+                      child: selfProfileInfo(context, sizes),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Container(
-            height: sizes.height * 0.012,
-            color: Colors.black12,
-          ),
-          SizedBox(
-            height: sizes.height * 0.6,
-            width: sizes.width,
-            child: uploadsSection(sizes, context),
-          ),
-        ],
+            Container(
+              height: sizes.height * 0.012,
+              color: Colors.black12,
+            ),
+            SizedBox(
+              height: sizes.height * 0.6,
+              width: sizes.width,
+              child: uploadsSection(sizes, context),
+            ),
+          ],
+        ),
       ),
     );
   }
