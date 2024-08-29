@@ -4,10 +4,21 @@ import 'package:social_media_app/presentation/controllers/bottom_nav_controller.
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
 import '../controllers/auth_shared_pref.dart';
+import '../controllers/posts_controller.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
+  @override
+  State<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
+  @override
+  void initState() {
+    super.initState();
+    Get.find<PostController>().fetchPosts();
+  }
   @override
   Widget build(BuildContext context) {
     return GetBuilder<BottomNavController>(
@@ -16,10 +27,6 @@ class BottomNavBar extends StatelessWidget {
           body: ctrl.screens[ctrl.selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
             onTap: (index)async{
-              if(index==3){
-                await AuthController.setToken('Ggv6C6rP28dDagGyeRwiX5L2K2F2');
-                await AuthController.getToken();
-              }
               ctrl.setSelectedIndex(index);
             },
             currentIndex: ctrl.selectedIndex,
