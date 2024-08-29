@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:social_media_app/presentation/controllers/login_controller.dart';
+import 'package:social_media_app/presentation/screens/bottom_nav_bar.dart';
+import 'package:social_media_app/presentation/screens/live_home_screen.dart';
 
 import '../utils/assets_colors_path.dart';
-import '../utils/regexp_email_verification.dart';
+import '../utils/constants.dart';
 import '../widgets/customise_button.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -20,7 +24,6 @@ class _LogInScreenState extends State<LogInScreen> {
   late Color _buttonColor = AssetsColorsPath.buttonShadowColors;
   bool _isChecked = false;
   bool _isPasswordIcon = false;
-  bool _isLogin = false;
 
   @override
   void initState() {
@@ -36,24 +39,6 @@ class _LogInScreenState extends State<LogInScreen> {
     );
   }
 
-  Future<void> _logInInProgress() async {
-    if (_fromKey.currentState!.validate()) {
-      setState(() {
-        _isLogin = true;
-      });
-
-      await Future.delayed(const Duration(seconds: 2)); // Simulate a delay
-
-      setState(() {
-        _isLogin = false;
-      });
-      if (mounted) {
-        setState(() {
-          dataLogIn();
-        });
-      }
-    }
-  }
 
   void _iconCheckbox() {
     setState(() {
@@ -92,7 +77,7 @@ class _LogInScreenState extends State<LogInScreen> {
           },
         ),
       ),
-      body: _isLogin
+      body:Get.find<LoginController>().inProgress
           ? Center(
               child: LoadingAnimationWidget.dotsTriangle(
                 color: Colors.grey,
@@ -117,7 +102,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                       Text(
                         'Email',
-                        style: textTheme.titleMedium,
+                        style: textTheme.labelMedium,
                       ),
                       const SizedBox(
                         height: 5,
@@ -126,7 +111,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         controller: _emailTEController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          hintText: '|Input Email',
+                          hintText: 'Input Email',
                           prefixIcon: Icon(Icons.mail_outlined),
                         ),
                         validator: (String? values) {
@@ -146,7 +131,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                       Text(
                         'Password',
-                        style: textTheme.titleMedium,
+                        style: textTheme.labelMedium,
                       ),
                       const SizedBox(
                         height: 5,
@@ -156,7 +141,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         obscureText: !_isPasswordIcon,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          hintText: '|Input Password',
+                          hintText: 'Input Password',
                           prefixIcon: const Icon(Icons.lock_outline_sharp),
                           suffixIcon: InkWell(
                             onTap: _passwordCheckBox,
@@ -190,22 +175,22 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: _iconCheckbox,
-                            icon: Icon(
-                              _isChecked
-                                  ? Icons.check_box
-                                  : Icons.check_box_outline_blank_rounded,
-                            ),
-                          ),
-                          Text(
-                            'Save Password',
-                            style: textTheme.titleMedium,
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     IconButton(
+                      //       onPressed: _iconCheckbox,
+                      //       icon: Icon(
+                      //         _isChecked
+                      //             ? Icons.check_box
+                      //             : Icons.check_box_outline_blank_rounded,
+                      //       ),
+                      //     ),
+                      //     Text(
+                      //       'Save Password',
+                      //       style: textTheme.titleMedium,
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 25,
                       ),
@@ -213,7 +198,15 @@ class _LogInScreenState extends State<LogInScreen> {
                         padding: const EdgeInsets.only(left: 10),
                         child: CustomiseButton(
                           title: 'Log In',
-                          onTap: _logInInProgress,
+                          onTap: ()async{
+                            bool isSuccess=await Get.find<LoginController>().login(
+                              email: _emailTEController.text.trim(),
+                              password: _passwordTEController.text.trim(),
+                            );
+                            if(isSuccess){
+                              Get.to(()=>const BottomNavBar());
+                            }
+                          },
                           color: _buttonColor,
                         ),
                       ),

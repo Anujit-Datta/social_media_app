@@ -1,14 +1,12 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
 import 'package:social_media_app/presentation/controllers/posts_controller.dart';
-import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
-import '../utils/assets_colors_path.dart';
 import '../widgets/button_avatar.dart';
 import '../widgets/button_bar.dart';
+import '../widgets/common_appbar.dart';
 import '../widgets/customize_box.dart';
-import '../widgets/logo_text.dart';
 import '../widgets/text_rich.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -22,15 +20,8 @@ class LiveHomeScreen extends StatefulWidget {
 }
 
 class _LiveHomeScreenState extends State<LiveHomeScreen> {
-  bool _isIconChecked = false;
   bool _isFavoriteIconChecked = false;
   ScrollController sharedScrollController = ScrollController();
-
-  void notificationsUpdate() {
-    setState(() {
-      _isIconChecked = !_isIconChecked;
-    });
-  }
 
   void favoriteUpdate() {
     setState(() {
@@ -39,86 +30,50 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    Get.find<PostController>().fetchPosts();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    log('Build Started');
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: buildAppBar(),
-      body: SingleChildScrollView(
-        controller: sharedScrollController,
-        child: Column(
-          children: [
-            buildStoryList(),
-            buildUserDetails(textTheme),
-          ],
-        ),
+      appBar: commonAppBar(),
+      body: GetBuilder<PostController>(
+        builder: (ctrl) {
+          return RefreshIndicator(
+            onRefresh: ()async{
+              ctrl.fetchPosts();
+            },
+            child: Visibility(
+              visible: !ctrl.inProgress,
+              replacement: Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: AppColors.accentColor,
+                  size: 50,
+                ),
+              ),
+              child: SingleChildScrollView(
+                controller: sharedScrollController,
+                child: Column(
+                  children: [
+                    buildStoryList(),
+                    buildUserDetails(textTheme),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
       ),
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      centerTitle: true,
-      leading: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: ButtonAvatar(
-          onTap: () async{
-            await AuthController.getToken().then((uid){
-              Get.to(() => ProfileScreen(uid: uid,));
-            });
-          },
-          child: const CircleAvatar(
-            foregroundImage: NetworkImage(
-              'https://as2.ftcdn.net/v2/jpg/03/26/98/51/1000_F_326985142_1aaKcEjMQW6ULp6oI9MYuv8lN9f8sFmj.jpg',
-            ),
-          ),
-        ),
-      ),
-      title: const LogoText(),
-      actions: [
-        ButtonAvatar(
-          onTap: () {
-            notificationsUpdate();
-          },
-          color: AssetsColorsPath.iconBackgroundColors,
-          child: Icon(
-            _isIconChecked
-                ? Icons.notifications_active
-                : Icons.notifications_none_outlined,
-            size: 28,
-          ),
-        ),
-        const SizedBox(
-          width: 2,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ButtonAvatar(
-            onTap: () {},
-            color: AssetsColorsPath.iconBackgroundColors,
-            child: const Icon(
-              Icons.logout,
-              size: 28,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget buildStoryList() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SizedBox(
-        height: MediaQuery.sizeOf(context).height*0.19,
-        child: GetBuilder<PostController>(
-          builder: (ctrl) {
-            return Visibility(
+    return GetBuilder<PostController>(
+      builder: (ctrl) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SizedBox(
+            height: MediaQuery.sizeOf(context).height*0.19,
+            child: Visibility(
               visible: !ctrl.inProgress,
               replacement: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
@@ -204,10 +159,10 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
                   );
                 },
               ),
-            );
-          }
-        ),
-      ),
+            ),
+          ),
+        );
+      }
     );
   }
 
