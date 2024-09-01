@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:social_media_app/presentation/controllers/add_post_controller.dart';
 import 'package:social_media_app/presentation/controllers/bottom_nav_controller.dart';
 import 'package:social_media_app/presentation/controllers/comment_controller.dart';
+import 'package:social_media_app/presentation/controllers/image_picker_controller.dart';
 import 'package:social_media_app/presentation/controllers/like_controller.dart';
 import 'package:social_media_app/presentation/controllers/login_controller.dart';
 import 'package:social_media_app/presentation/controllers/posts_controller.dart';
@@ -17,5 +19,7 @@ class ControllerBinders extends Bindings{
     Get.put(CommentController());
     Get.put(LikeController());
     Get.put(LoginController());
+    Get.put(ImagePickerController());
+    Get.put(AddPostController());
   }
 }

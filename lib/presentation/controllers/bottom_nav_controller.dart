@@ -13,10 +13,15 @@ class BottomNavController extends GetxController{
     const LiveHomeScreen(),
     const LiveHomeScreen(),
     const AddPostScreen(),
-    ProfileScreen(),
+    const ProfileScreen(),
   ];
 
-  get selectedIndex => _selectedIndex;
+  int get selectedIndex => _selectedIndex;
+
+  set selectedIndexSetter(int index){
+    _selectedIndex=index;
+    update();
+  }
 
   setSelectedIndex(int index)async{
 

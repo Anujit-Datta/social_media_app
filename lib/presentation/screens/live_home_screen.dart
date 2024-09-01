@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:social_media_app/presentation/controllers/comment_controller.dart';
+import 'package:social_media_app/presentation/controllers/login_controller.dart';
 import 'package:social_media_app/presentation/controllers/posts_controller.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 import '../widgets/button_avatar.dart';
@@ -22,11 +24,17 @@ class LiveHomeScreen extends StatefulWidget {
 class _LiveHomeScreenState extends State<LiveHomeScreen> {
   bool _isFavoriteIconChecked = false;
   ScrollController sharedScrollController = ScrollController();
+  final TextEditingController _commentTEController = TextEditingController();
 
   void favoriteUpdate() {
     setState(() {
       _isFavoriteIconChecked = !_isFavoriteIconChecked;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -69,98 +77,115 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
   Widget buildStoryList() {
     return GetBuilder<PostController>(
       builder: (ctrl) {
-        return Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height*0.19,
-            child: Visibility(
-              visible: !ctrl.inProgress,
+        return GetBuilder<LoginController>(
+          builder: (loginCtrl) {
+            return Visibility(
+              visible: !ctrl.inProgress && !loginCtrl.inProgress,
               replacement: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                   color: AppColors.accentColor,
                   size: 20,),
               ),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: ctrl.postList.length+1,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      left: 4,
-                      top: 0,
-                      right: 4,
-                      bottom: 0,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white38,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          Stack(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height*0.19,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: ctrl.postList.length+1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          left: 4,
+                          top: 0,
+                          right: 4,
+                          bottom: 0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  index==0?ctrl.postList[index].postedByProfilePic:ctrl.postList[index-1].attachment,
-                                  fit: BoxFit.cover,
-                                  height: MediaQuery.sizeOf(context).height*0.16,
-                                  width: 120,
-                                ),
+                              Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: GetBuilder<LoginController>(
+                                      builder: (loginController) {
+                                        return Visibility(
+                                          visible: !(loginController.selfProfile?.profilePicture=='' && index==0),
+                                          replacement: Image.asset(
+                                            'assets/profile_avater.jpg',
+                                            fit: BoxFit.cover,
+                                            height: MediaQuery.sizeOf(context).height*0.16,
+                                            width: 120,
+                                          ),
+                                          child: Image.network(
+                                            index==0?loginController.selfProfile?.profilePicture??'':ctrl.postList[index-1].attachment,
+                                            fit: BoxFit.cover,
+                                            height: MediaQuery.sizeOf(context).height*0.16,
+                                            width: 120,
+                                          ),
+                                        );
+                                      }
+                                    ),
+                                  ),
+                                  if (index == 0)
+                                    Positioned(
+                                      bottom: 40,
+                                      left: 0,
+                                      right: 0,
+                                      child: Center(
+                                        child: IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            Icons.add_circle,
+                                            color: Colors.white,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  Visibility(
+                                    visible: index!=0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 6,
+                                        left: 4,
+                                        right: 1,
+                                      ),
+                                      child: ButtonAvatar(
+                                        onTap: () {},
+                                        child: CircleAvatar(
+                                          foregroundImage: NetworkImage(
+                                            ctrl.postList[index==0?0:index-1].postedByProfilePic,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              if (index == 0)
-                                Positioned(
-                                  bottom: 40,
-                                  left: 0,
-                                  right: 0,
-                                  child: Center(
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Icons.add_circle,
-                                        color: Colors.white,
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              Visibility(
-                                visible: index!=0,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 6,
-                                    left: 4,
-                                    right: 1,
-                                  ),
-                                  child: ButtonAvatar(
-                                    onTap: () {},
-                                    child: CircleAvatar(
-                                      foregroundImage: NetworkImage(
-                                        ctrl.postList[index==0?0:index-1].postedByProfilePic,
-                                      ),
-                                    ),
-                                  ),
+                              const SizedBox(height: 5),
+                              Text(
+                                index % 10 == 0 ? 'You' : 'userName',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            index % 10 == 0 ? 'You' : 'userName',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          }
         );
       }
     );
@@ -171,68 +196,80 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
       height: MediaQuery.sizeOf(context).height*0.6,
       child: GetBuilder<PostController>(
         builder: (ctrl) {
-          return Visibility(
-            visible: !ctrl.inProgress,
-            replacement: LoadingAnimationWidget.staggeredDotsWave(
-              color: AppColors.accentColor,
-              size: 50,
-            ),
-            child: ListView.builder(
-              //physics: NeverScrollableScrollPhysics(),
-              controller: sharedScrollController,
-              itemCount: ctrl.postList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 15,
-                    right: 15,
-                    top: 10,
-                  ),
-                  child: CustomizeBox(
-                    //height: MediaQuery.sizeOf(context).height*0.6,
-                    color: Colors.white70,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              ButtonAvatar(
-                                onTap: () {},
-                                child: CircleAvatar(
-                                  foregroundImage: NetworkImage(
-                                    ctrl.postList[index].postedByProfilePic,
+          return GetBuilder<LoginController>(
+            builder: (loginCtrl) {
+              return Visibility(
+                visible: !ctrl.inProgress && !loginCtrl.inProgress,
+                replacement: LoadingAnimationWidget.staggeredDotsWave(
+                  color: AppColors.accentColor,
+                  size: 50,
+                ),
+                child: ListView.builder(
+                  //physics: NeverScrollableScrollPhysics(),
+                  controller: sharedScrollController,
+                  itemCount: ctrl.postList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                        top: 10,
+                      ),
+                      child: CustomizeBox(
+                        //height: MediaQuery.sizeOf(context).height*0.6,
+                        color: Colors.white70,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ButtonAvatar(
+                                    onTap: () {},
+                                    child: CircleAvatar(
+                                      foregroundImage: NetworkImage(
+                                        ctrl.postList[index].postedByProfilePic,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  TextRich(
+                                    textTheme: textTheme,
+                                    title: '${ctrl.postList[index].postedByName}\n',
+                                    subTitle: '@${ctrl.postList[index].postedByUsername}',
+                                  ),
+                                  Visibility(
+                                    visible: ctrl.postList[index].isProfilePicture,
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(6.0),
+                                      child: Text('updated Profile Picture'),
+                                    ),
+                                  )
+                                ],
                               ),
-                              const SizedBox(
-                                width: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(ctrl.postList[index].caption),
+                            ),
+                            Card(
+                              child: Image.network(
+                                ctrl.postList[index].attachment,
                               ),
-                              TextRich(
-                                textTheme: textTheme,
-                                title: '${ctrl.postList[index].postedByName}\n',
-                                subTitle: '@${ctrl.postList[index].postedByUsername}',
-                              ),
-                            ],
-                          ),
+                            ),
+                            buildFavCommentButton(textTheme,index),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(ctrl.postList[index].caption),
-                        ),
-                        Card(
-                          child: Image.network(
-                            ctrl.postList[index].attachment,
-                          ),
-                        ),
-                        buildFavCommentButton(textTheme,index),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
         }
       ),
@@ -292,28 +329,32 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
           children: [
             ButtonIconBar(
               icon: Icon(
-                _isFavoriteIconChecked ? Icons.favorite : Icons.favorite_border,
+                ctrl.postList[index].isLikedByMe ? Icons.favorite : Icons.favorite_border,
+                color: ctrl.postList[index].isLikedByMe ? Colors.redAccent:null,
               ),
-              onTap: () {},
+              onTap: () {
+                ctrl.likeTap(index: index);
+              },
             ),
             ButtonIconBar(
               onTap: () {
+                if(!(Get.find<CommentController>().commentsList.isNotEmpty && Get.find<CommentController>().commentsList[0].postId==ctrl.postList[index].id)){
+                Get.find<CommentController>()
+                    .fetchCommentsList(ctrl.postList[index].id!);
+              }
+              log(ctrl.postList[index].id!);
                 showModalBottomSheet(
                   context: context,
                   builder: (context) => buildCommentBar(textTheme, context,index),
                 );
               },
-              icon: Row(
+              icon: const Row(
                 children: [
-                  const Icon(Icons.comment_outlined),
-                  const SizedBox(
+                  Icon(Icons.comment_outlined),
+                  SizedBox(
                     width: 5,
                   ),
-                  Text(ctrl.postList[index].comments.length.toString()),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  const Text('Comments',),
+                  Text('Comments',),
                 ],
               ),
             ),
@@ -331,7 +372,7 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
   }
 
   Widget buildCommentBar(TextTheme textTheme, BuildContext context,int postIndex) {
-    return GetBuilder<PostController>(
+    return GetBuilder<CommentController>(
       builder: (ctrl) {
         return Column(
           children: [
@@ -350,73 +391,98 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
               'Comment',
               style: textTheme.labelMedium,
             ),
-            Expanded(
-              child: CustomizeBox(
-                //height: MediaQuery.of(context).size.height * 0.8,
-                child: ListView.builder(
-                  itemCount: ctrl.postList[postIndex].comments.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      foregroundImage: NetworkImage(
-                                        ctrl.postList[postIndex].comments[index].commentedByProfilePic,
+            Visibility(
+              visible: !ctrl.inProgress,
+              replacement: Expanded(
+                child: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: AppColors.accentColor,
+                    size: 30,
+                  ),
+                ),
+              ),
+              child: Expanded(
+                child: CustomizeBox(
+                  //height: MediaQuery.of(context).size.height * 0.8,
+                  child: ListView.builder(
+                    itemCount: ctrl.commentsList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        foregroundImage: NetworkImage(
+                                          ctrl.commentsList[index].commentedByProfilePic,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.sizeOf(context).width*0.7,
-                                      child: TextRich(
-                                        textTheme: textTheme,
-                                        title: ctrl.postList[postIndex].comments[index].commentedByName,
-                                        subTitle: '   ${timeago.format(ctrl.postList[postIndex].comments[index].commentTime)}\n',
-                                        commentText:
-                                        ctrl.postList[postIndex].comments[index].comment,
+                                      const SizedBox(
+                                        width: 10,
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    ButtonIconBar(
-                                      icon: Icon(
-                                        _isFavoriteIconChecked
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
+                                      SizedBox(
+                                        width: MediaQuery.sizeOf(context).width*0.7,
+                                        child: TextRich(
+                                          textTheme: textTheme,
+                                          title: ctrl.commentsList[index].commentedByName,
+                                          subTitle: '   ${timeago.format(ctrl.commentsList[index].commentTime)}\n',
+                                          commentText:
+                                          ctrl.commentsList[index].comment,
+                                        ),
                                       ),
-                                      onTap: () {},
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      const Spacer(),
+                                      ButtonIconBar(
+                                        icon: Icon(
+                                          ctrl.commentsList[index].likedByMe
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: ctrl.commentsList[index].likedByMe?Colors.redAccent:null,
+                                        ),
+                                        onTap: () {
+                                          ctrl.likeTap(index: index);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
             TextFormField(
+              controller: _commentTEController,
               decoration: InputDecoration(
                 hintText: 'Add Comment',
-                suffixStyle: textTheme.labelMedium,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: ButtonAvatar(),
+                hintStyle: textTheme.bodySmall,
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    foregroundImage: NetworkImage(
+                      Get.find<LoginController>().selfProfile!.profilePicture,
+                    ),
+                  ),
                 ),
                 suffixIcon: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Post',
-                    style: textTheme.labelSmall,
+                  onPressed: () {
+                    Get.find<CommentController>().addComment(
+                      Get.find<PostController>().postList[postIndex].id!,
+                      _commentTEController.text.trim(),
+                    );
+                    _commentTEController.clear();
+                  },
+                  child: Icon(
+                    Icons.send,
+                    color: AppColors.accentColor,
                   ),
                 ),
               ),

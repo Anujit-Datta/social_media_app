@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:social_media_app/data/models/comment_model.dart';
 import 'package:social_media_app/data/models/user_model.dart';
 import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
+import 'package:social_media_app/presentation/controllers/login_controller.dart';
+
+import '../../data/models/post_model.dart';
 
 class CommentController extends GetxController{
   final _data =FirebaseFirestore.instance;
@@ -13,8 +16,9 @@ class CommentController extends GetxController{
   get inProgress => _inProgress;
 
 
-  Future<List<Comment>> fetchCommentsList(String postId)async{
+  Future<bool> fetchCommentsList(String postId)async{
     _inProgress=true;
+    bool isSuccess=true;
     commentsList.clear();
     update();
 
@@ -33,7 +37,40 @@ class CommentController extends GetxController{
 
     _inProgress=false;
     update();
-    return commentsList;
+    return isSuccess;
+  }
+
+  addComment(String postId,String comment)async{
+    String uid = await AuthController.getToken();
+    UserModel selfProfile=Get.find<LoginController>().selfProfile!;
+    Comment newComment=Comment(
+      comment: comment,
+      commentedByUid: uid,
+      commentedByName: selfProfile.name,
+      commentedByProfilePic: selfProfile.profilePicture,
+      commentTime: DateTime.now(),
+      postId: postId,
+      likedBy: [],
+    );
+    commentsList.add(newComment);
+    await _data.collection('Comment').add(newComment.toJson());
+
+    update();
+  }
+
+  likeTap({required int index})async{
+    commentsList[index].likedByMe=!commentsList[index].likedByMe;
+    update();
+    log(AuthController.accessToken);
+    if(commentsList[index].likedByMe){
+      await _data.collection('Comment').doc(commentsList[index].id).update({
+        'likedBy': FieldValue.arrayUnion([AuthController.accessToken]),
+      });
+    }else{
+      await _data.collection('Comment').doc(commentsList[index].id).update({
+        'likedBy': FieldValue.arrayRemove([AuthController.accessToken]),
+      });
+    }
   }
 
 }
