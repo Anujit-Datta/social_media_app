@@ -34,7 +34,7 @@ class _InitialScreenState extends State<InitialScreen> {
     await Future.delayed(const Duration(seconds: 1)).whenComplete(()async{
       if(token!=''){
         await Get.find<LoginController>().loadSelfProfile().whenComplete((){
-          Get.to(()=>const BottomNavBar());
+          Get.offAll(()=>const BottomNavBar());
         });
       }
       await Future.delayed(const Duration(seconds: 1));

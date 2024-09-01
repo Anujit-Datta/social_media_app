@@ -4,9 +4,8 @@ class UserModel{
   String username;
   String email;
   String profilePicture;
-  int postCount;
-  int followerCount;
-  int followingCount;
+  List<String> followers;
+  List<String> followings;
   List<String> posts;
 
   UserModel({
@@ -15,9 +14,8 @@ class UserModel{
    required this.username,
    required this.email,
     this.profilePicture ='',
-    this.postCount=0,
-    this.followerCount=0,
-    this.followingCount=0,
+    this.followers=const[],
+    this.followings=const[],
     this.posts=const[],
   });
 
@@ -28,10 +26,9 @@ class UserModel{
       username: json['username'],
       email: json['email'],
       profilePicture: json['profilePicture'] ?? '',
-      postCount: json['postCount'] ?? 0,
-      followerCount: json['followerCount'] ?? 0,
-      followingCount: json['followingCount'] ?? 0,
       posts: List<String>.from(json['posts'] ?? []),
+      followers: List<String>.from(json['followers'] ?? []),
+      followings: List<String>.from(json['followings'] ?? []),
     );
   }
 
@@ -43,10 +40,9 @@ class UserModel{
       'username': username,
       'email': email,
       'profilePicture': profilePicture,
-      'postCount': postCount,
-      'followerCount': followerCount,
-      'followingCount': followingCount,
       'posts': posts,
+      'followers': followers,
+      'followings': followings,
     };
   }
 }
