@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:social_media_app/presentation/controllers/registration_controller.dart';
 import 'package:social_media_app/presentation/screens/bottom_nav_bar.dart';
+import 'package:social_media_app/presentation/screens/initial_screen.dart';
 import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 
@@ -31,60 +33,73 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.sizeOf(context).height*0.01,),
-              Text(
-                'Enter your email & password to register with us.',
-                style: Theme.of(context).textTheme.titleLarge,
+      body: GetBuilder<RegistrationController>(
+        builder: (ctrl) {
+          return Visibility(
+            visible: !ctrl.inProgress,
+            replacement: Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: AppColors.accentColor,
+                size: 50,
               ),
-              SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.05,
-              ),
-              Form(
-                key: _formKey,
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(30),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    nameField(context),
-                    emailField(context),
-                    passwordField(context),
-                    confirmPasswordField(context),
+                    SizedBox(height: MediaQuery.sizeOf(context).height*0.01,),
+                    Text(
+                      'Enter your email & password to register with us.',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                     SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.03,
+                      height: MediaQuery.sizeOf(context).height * 0.05,
                     ),
-                    ElevatedButton(
-                      onPressed: () async{
-                        if (_formKey.currentState!.validate()) {
-                          bool isSuccess=await Get.find<RegistrationController>().register(
-                            name: _nameTEController.text.trim(),
-                            email: _emailTEController.text.trim(),
-                            password: _passwordTEController.text.trim(),
-                          );
-                          if(isSuccess){
-                            Get.to(()=>const BottomNavBar());
-                          }
-                        }
-                      },
-                      child: Text(
-                        'Register',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          nameField(context),
+                          emailField(context),
+                          passwordField(context),
+                          confirmPasswordField(context),
+                          SizedBox(
+                            height: MediaQuery.sizeOf(context).height * 0.03,
+                          ),
+                          ElevatedButton(
+                            onPressed: () async{
+                              if (_formKey.currentState!.validate()) {
+                                bool isSuccess=await Get.find<RegistrationController>().register(
+                                  name: _nameTEController.text.trim(),
+                                  email: _emailTEController.text.trim(),
+                                  password: _passwordTEController.text.trim(),
+                                );
+                                if(isSuccess){
+                                  Get.to(()=>const InitialScreen());
+                                }
+                              }
+                            },
+                            child: Text(
+                              'Register',
+                              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
                             ),
+                          ),
+                          SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: MediaQuery.sizeOf(context).height*0.05,),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
+          );
+        }
       ),
     );
   }

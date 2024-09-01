@@ -6,6 +6,7 @@ import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart'
 import 'package:social_media_app/presentation/widgets/snackbar.dart';
 
 import '../../data/models/user_model.dart';
+import '../utils/constants.dart';
 
 class RegistrationController extends GetxController{
   final _auth =FirebaseAuth.instance;
@@ -32,9 +33,11 @@ class RegistrationController extends GetxController{
                   name: name,
                   username: username,
                   email: email,
+                  profilePicture: Constants.profileImage,
                 ).toJson()
             ).whenComplete((){
               AuthController.setToken(userCredential.user!.uid);
+              isSuccess=true;
               snackBar(title: 'Registration Successful',color: Colors.green);
             }).catchError((e){
               snackBar(title: 'Registration Error!',message: e.toString(),color: Colors.red);
