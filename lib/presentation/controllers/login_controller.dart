@@ -29,6 +29,7 @@ class LoginController extends GetxController{
             AuthController.setToken(userCredential.user!.uid);
             selfProfile=UserModel.fromJson(doc);
             snackBar(title: 'Login Successful', color: Colors.green,message: 'Hello ${doc['name']}');
+            loadSelfProfile();
           }
         }).catchError((e){
           snackBar(title: 'Registration Error!',message: e.toString(),color: Colors.red);
@@ -38,8 +39,8 @@ class LoginController extends GetxController{
       snackBar(title: 'Authentication Error!',message: e.toString(),color: Colors.red);
     });
 
-    _inProgress=false;
-    update();
+    // _inProgress=false;
+    // update();
     return isSuccess;
   }
 

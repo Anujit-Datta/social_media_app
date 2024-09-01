@@ -30,9 +30,9 @@ class _InitialScreenState extends State<InitialScreen> {
     inProgress=true;
     setState(() {});
     String token=await AuthController.getToken();
+    await Get.find<PostController>().fetchPosts();
     await Future.delayed(const Duration(seconds: 1)).whenComplete(()async{
       if(token!=''){
-        await Get.find<PostController>().fetchPosts();
         await Get.find<LoginController>().loadSelfProfile().whenComplete((){
           Get.to(()=>const BottomNavBar());
         });

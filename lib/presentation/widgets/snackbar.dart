@@ -7,7 +7,7 @@ snackBar({required String title, String? message,Color? color}){
       titleText: Text(
         title,
         style: TextStyle(
-          color: color,
+          color: color??Colors.greenAccent,
           fontWeight: FontWeight.bold,
           fontSize: 15,
         ),
@@ -15,7 +15,7 @@ snackBar({required String title, String? message,Color? color}){
       messageText: Text(
         message??'',
         style: TextStyle(
-          color: color,
+          color: color??Colors.greenAccent,
         ),
       ),
       backgroundColor: Colors.black26,

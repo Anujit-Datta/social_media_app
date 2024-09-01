@@ -32,6 +32,7 @@ class Comment{
       commentedByProfilePic: json['commentedByProfilePic'],
       commentTime: json['commentTime'].toDate(),
       likedBy: List<String>.from(json['likedBy'] ?? []),
+
     );
   }
 
