@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_staggered_grid_view/flutter_dynamic_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
+import 'package:social_media_app/presentation/controllers/follow_controller.dart';
 import 'package:social_media_app/presentation/controllers/profile_controller.dart';
+import 'package:social_media_app/presentation/utils/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key,this.uid});
@@ -36,40 +39,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: ()async{
-          Get.find<ProfileController>().fetchProfileInfo(uid: widget.uid ?? AuthController.accessToken);
-        },
-        child: Column(
-          children: [
-            SizedBox(
-              height: sizes.height * 0.17,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: sizes.height * 0.02),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    profilePicture(sizes),
-                    Visibility(
-                      visible: true,
-                      replacement: otherProfileSection(context, sizes,),
-                      child: selfProfileInfo(context, sizes),
-                    ),
-                  ],
+      body: GetBuilder<ProfileController>(
+        builder: (ctrl) {
+          return RefreshIndicator(
+            onRefresh: ()async{
+              ctrl.fetchProfileInfo(uid: widget.uid ?? AuthController.accessToken);
+            },
+            child: Visibility(
+              visible: !ctrl.inProgress,
+              replacement: Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: AppColors.accentColor,
+                  size: 50,
                 ),
               ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: sizes.height * 0.17,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: sizes.height * 0.02),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          profilePicture(sizes),
+                          Visibility(
+                            visible: widget.uid == AuthController.accessToken || widget.uid == null,
+                            replacement: otherProfileSection(context, sizes,),
+                            child: selfProfileInfo(context, sizes),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: sizes.height * 0.012,
+                    color: Colors.black12,
+                  ),
+                  SizedBox(
+                    height: sizes.height * 0.6,
+                    width: sizes.width,
+                    child: uploadsSection(sizes, context),
+                  ),
+                ],
+              ),
             ),
-            Container(
-              height: sizes.height * 0.012,
-              color: Colors.black12,
-            ),
-            SizedBox(
-              height: sizes.height * 0.6,
-              width: sizes.width,
-              child: uploadsSection(sizes, context),
-            ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }
@@ -159,13 +175,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: sizes.height*0.035,
             child: Row(
               children: [
-                MaterialButton(
-                  onPressed: (){},
-                  color: Colors.grey.shade400,
-                  child: Text(
-                    'Follow',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                GetBuilder<FollowController>(
+                  builder: (followCtrl) {
+                    return Visibility(
+                      visible: !followCtrl.inProgress,
+                      replacement: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 22),
+                        child: LoadingAnimationWidget.inkDrop(
+                          color: AppColors.accentColor,
+                          size: 20,
+                        ),
+                      ),
+                      child: GetBuilder<ProfileController>(
+                        builder: (ctrl) {
+                          return Visibility(
+                            visible: !ctrl.user.followers.contains(AuthController.accessToken),
+                            replacement: MaterialButton(
+                              onPressed: (){
+                                Get.find<FollowController>().unfollow(uid: widget.uid!);
+                              },
+                              color: Colors.grey.shade400,
+                              child: Text(
+                                'Unfollow',
+                                style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.redAccent),
+                              ),
+                            ),
+                            child: MaterialButton(
+                              onPressed: (){
+                                Get.find<FollowController>().follow(uid: widget.uid!);
+                              },
+                              color: Colors.grey.shade400,
+                              child: Text(
+                                'Follow',
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                            ),
+                          );
+                        }
+                      ),
+                    );
+                  }
                 ),
                 SizedBox(width: sizes.width*0.03,),
                 MaterialButton(
@@ -191,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Row(
             children: [
               Text(
-                ctrl.user.postCount.toString(),
+                ctrl.user.posts.length.toString(),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               Text(
@@ -207,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Text(
-                ctrl.user.followerCount.toString(),
+                ctrl.user.followers.length.toString(),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               Text(
@@ -223,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Text(
-                ctrl.user.followingCount.toString(),
+                ctrl.user.followings.length.toString(),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               Text(

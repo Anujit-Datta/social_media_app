@@ -4,6 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:social_media_app/presentation/controllers/comment_controller.dart';
 import 'package:social_media_app/presentation/controllers/login_controller.dart';
 import 'package:social_media_app/presentation/controllers/posts_controller.dart';
+import 'package:social_media_app/presentation/screens/profile_screen.dart';
 import 'package:social_media_app/presentation/utils/app_colors.dart';
 import '../widgets/button_avatar.dart';
 import '../widgets/button_bar.dart';
@@ -227,7 +228,9 @@ class _LiveHomeScreenState extends State<LiveHomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ButtonAvatar(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.to(()=>ProfileScreen(uid: ctrl.postList[index].postedBy,));
+                                    },
                                     child: CircleAvatar(
                                       foregroundImage: NetworkImage(
                                         ctrl.postList[index].postedByProfilePic,
