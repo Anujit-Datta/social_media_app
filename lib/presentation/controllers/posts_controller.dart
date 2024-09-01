@@ -3,10 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:social_media_app/presentation/controllers/auth_shared_pref.dart';
 import 'package:social_media_app/presentation/controllers/comment_controller.dart';
-import 'package:social_media_app/presentation/widgets/snackbar.dart';
-
+import 'package:social_media_app/presentation/controllers/login_controller.dart';
 import '../../data/models/post_model.dart';
-import '../../data/models/user_model.dart';
+
 
 class PostController extends GetxController{
   final _data =FirebaseFirestore.instance;
@@ -14,6 +13,21 @@ class PostController extends GetxController{
   List<Post> postList=[];
 
   get inProgress => _inProgress;
+
+  likeTap({required int index})async{
+    postList[index].isLikedByMe=!postList[index].isLikedByMe;
+    update();
+    log(AuthController.accessToken);
+    if(postList[index].isLikedByMe){
+      await _data.collection('Posts').doc(postList[index].id).update({
+        'likedBy': FieldValue.arrayUnion([AuthController.accessToken]),
+      });
+    }else{
+      await _data.collection('Posts').doc(postList[index].id).update({
+        'likedBy': FieldValue.arrayRemove([AuthController.accessToken]),
+      });
+    }
+  }
 
 
   Future<bool> fetchPosts()async{
@@ -25,16 +39,22 @@ class PostController extends GetxController{
     String uid = await AuthController.getToken();
     
     await _data.collection('Posts').get().then((querySnapshot)async{
-      log(querySnapshot.toString());
       for (QueryDocumentSnapshot<Map<String, dynamic>> postSnapshot in querySnapshot.docs) {
         Post post=Post.fromJson(postSnapshot.data());
-        log(post.toString());
+        post.id=postSnapshot.id;
         List likedBy=List<String>.from(postSnapshot.data()['likedBy']);
         if(likedBy.contains(uid)){
           post.isLikedByMe=true;
         }
-        post.id=postSnapshot.id;
-        post.comments=await Get.find<CommentController>().fetchCommentsList(postSnapshot.id);
+        await _data.collection('User').doc(post.postedBy).get().then((docSnapshot){
+          Map<String,dynamic>? user=docSnapshot.data();
+          if(user!=null){
+            post.postedByName=user['name'];
+            post.postedByProfilePic=user['profilePicture'];
+            log(post.id.toString());
+            post.postedByUsername=user['username'];
+          }
+        });
         postList.add(post);
       }
     }).catchError((e){
@@ -45,6 +65,4 @@ class PostController extends GetxController{
     update();
     return isSuccess;
   }
-
-
 }

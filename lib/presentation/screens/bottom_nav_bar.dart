@@ -17,7 +17,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    Get.find<PostController>().fetchPosts();
+    //Get.find<PostController>().fetchPosts();
   }
   @override
   Widget build(BuildContext context) {
